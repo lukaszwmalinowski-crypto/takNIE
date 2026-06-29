@@ -505,6 +505,7 @@ function removePlayer(id) {
   state.players = state.players.filter((player) => player.id !== id);
   savePlayers();
   renderSetupPlayers();
+  syncDuelSettings();
   drawWheel(state.players);
 }
 
@@ -520,7 +521,17 @@ function addPlayer(name) {
 }
 
 function syncDuelSettings() {
+  const hasExactlyTwoPlayers = state.players.length === 2;
+
+  els.duelMode.checked = hasExactlyTwoPlayers;
+  els.duelMode.disabled = true;
+
   const duelActive = els.duelMode.checked;
+  if (duelActive) {
+    els.removeAfterSpin.checked = false;
+    els.freePassLast.checked = false;
+  }
+
   els.removeAfterSpin.disabled = duelActive;
   els.freePassLast.disabled = duelActive;
 }
@@ -1079,7 +1090,7 @@ els.installAndroid.addEventListener("click", async () => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=33").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=37").catch(() => {});
   });
 }
 

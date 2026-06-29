@@ -1,4 +1,4 @@
-Nie mow TAK, Nie mow NIE - finalna paczka GitHub Pages v37
+Nie mow TAK, Nie mow NIE - paczka GitHub Pages v38
 
 Jak wrzucic:
 1. Wgraj wszystkie pliki z tego folderu do glownego katalogu repozytorium.
@@ -6,4 +6,8 @@ Jak wrzucic:
 3. W GitHub wlacz Pages: Settings -> Pages -> Deploy from branch.
 4. Wybierz branch main oraz folder /root.
 
-W paczce sa tylko pliki uzywane przez aplikacje.
+Zmiana v38:
+- Kolo kreci sie mocniej przy kazdym losowaniu.
+- Podczas losowania widac komunikat "Kolo sie kreci..." i przycisk "Kreci...".
+- Po czasie 0 gra automatycznie zalicza wpadke, zeby nie bylo przestoju.
+- Przejscie na plansze po rundzie jest szybsze.

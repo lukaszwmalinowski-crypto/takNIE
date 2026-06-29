@@ -769,17 +769,21 @@ function spinWheel() {
   const selectedPlayer = wheelPlayers[selectedIndex];
   const sliceAngle = 360 / wheelPlayers.length;
   const selectedCenter = selectedIndex * sliceAngle + sliceAngle / 2 - 90;
-  const currentVisualRotation = state.currentRotation;
+  const currentVisualRotation = normalizeDegrees(state.currentRotation);
   const neededRotation = normalizeDegrees(-90 - selectedCenter - currentVisualRotation);
-  const extraSpins = 5 * 360;
-  const targetRotation = currentVisualRotation + extraSpins + neededRotation;
+  const extraSpins = (6 + Math.floor(Math.random() * 4)) * 360;
+  const targetRotation = state.currentRotation + extraSpins + neededRotation;
 
   state.isSpinning = true;
   els.spinButton.disabled = true;
   setActionButtons(false);
   stopTimer();
+  state.activePlayerId = null;
+  state.activeQuestion = "Koło się kręci...";
+  updateTurnCopy();
+  els.spinButton.textContent = "Kręci...";
   els.wheel.style.transform = `rotate(${targetRotation}deg)`;
-  state.currentRotation = targetRotation % 360;
+  state.currentRotation = targetRotation;
 
   window.setTimeout(() => {
     state.isSpinning = false;
@@ -789,8 +793,9 @@ function spinWheel() {
     updateTurnCopy();
     setActionButtons(true);
     startTimer();
+    els.spinButton.textContent = "Kręć";
     els.spinButton.disabled = false;
-  }, 4100);
+  }, 4600);
 }
 
 function normalizeDegrees(value) {
@@ -851,6 +856,9 @@ function startTimer() {
 
     if (state.timerLeft <= 0) {
       stopTimer();
+      if (state.activePlayerId) {
+        finishTurn("fail");
+      }
     }
   }, 1000);
 }
@@ -911,7 +919,7 @@ function finishTurn(result) {
   updateTurnCopy();
 
   if (!state.availablePlayers.length) {
-    window.setTimeout(showBoard, 700);
+    window.setTimeout(showBoard, 260);
   }
 }
 
@@ -1090,7 +1098,7 @@ els.installAndroid.addEventListener("click", async () => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=37").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=38").catch(() => {});
   });
 }
 

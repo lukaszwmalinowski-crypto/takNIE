@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#17171f" />
+    <meta name="description" content="Imprezowa gra PWA: Nie mów TAK, Nie mów NIE." />
+    <link rel="manifest" href="./manifest.webmanifest?v=33" />
+    <link rel="icon" href="./icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <link rel="stylesheet" href="./styles.css?v=33" />
+    <title>Nie mów TAK, Nie mów NIE</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="title-screen" id="titleScreen" aria-label="Strona tytułowa">
+        <img src="./title-screen.png" alt="Nie mów TAK, Nie mów NIE" />
+        <button class="title-start primary-action" id="enterSetup" type="button">Wejdź do gry</button>
+      </section>
+
+      <section class="setup-screen is-hidden" id="setupScreen" aria-labelledby="setupTitle">
+        <div class="brand-row">
+          <h1 id="setupTitle" class="game-title">
+            <span class="title-line">Nie mów <strong>TAK</strong>,</span>
+            <span class="title-line">Nie mów <em>NIE</em></span>
+          </h1>
+        </div>
+
+        <form class="player-form" id="playerForm">
+          <label for="playerName">Dodaj gracza</label>
+          <div class="input-row">
+            <input id="playerName" name="playerName" type="text" autocomplete="off" maxlength="16" placeholder="Imię gracza" />
+            <button type="submit">Dodaj</button>
+          </div>
+        </form>
+
+        <div class="player-list" id="setupPlayers" aria-live="polite"></div>
+
+        <div class="settings-grid" aria-label="Ustawienia gry">
+          <label class="toggle-row">
+            <span>Tryb Pojedynek 1 na 1</span>
+            <input id="duelMode" type="checkbox" />
+          </label>
+          <label class="toggle-row">
+            <span>Usuń gracza z koła po losowaniu</span>
+            <input id="removeAfterSpin" type="checkbox" />
+          </label>
+          <label class="toggle-row">
+            <span>Wolny los dla ostatniego gracza</span>
+            <input id="freePassLast" type="checkbox" checked />
+          </label>
+          <label class="select-row">
+            <span>Czas odpowiedzi</span>
+            <select id="roundTime">
+              <option value="5">5 s</option>
+              <option value="10">10 s</option>
+              <option value="15">15 s</option>
+              <option value="20">20 s</option>
+              <option value="30" selected>30 s</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="primary-action" id="startGame" type="button">Start gry</button>
+
+        <div class="setup-buttons" aria-label="Skróty i instalacja">
+          <button type="button" data-panel="rules">Instrukcja</button>
+          <button type="button" data-panel="iphone">iPhone</button>
+          <button id="installAndroid" type="button">Android</button>
+          <a class="spy-game-button" href="https://lukaszwmalinowski-crypto.github.io/graszpieg/" aria-label="Zagraj w Szpiega">
+            <img src="./spy-button-transparent.png" alt="Zagraj w Szpiega" />
+          </a>
+        </div>
+
+        <section class="setup-info is-hidden" id="setupInfo" aria-live="polite">
+          <h2>Instrukcja</h2>
+          <ol>
+            <li>Dodaj graczy i ustaw czas odpowiedzi.</li>
+            <li>Kręć kołem, żeby wylosować osobę.</li>
+            <li>Gracz odpowiada bez słów TAK i NIE.</li>
+            <li>Dał radę oraz wolny los przesuwają pionek o 1 pole.</li>
+            <li>Tryb Pojedynek działa tylko dla 2 graczy: każdy ma po jednej turze w rundzie.</li>
+            <li>Pierwsza osoba na polu 10 wygrywa.</li>
+          </ol>
+        </section>
+
+        <footer class="setup-meta">
+          <span>Wersja 0.2.2 · aktualizacja 2026-06-29</span>
+        </footer>
+      </section>
+
+      <section class="game-screen is-hidden" id="gameScreen" aria-labelledby="gameTitle">
+        <header class="game-header">
+          <button class="icon-button" id="backToSetup" type="button" aria-label="Wroc do ustawien">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <div class="game-title-wrap">
+            <h2 id="gameTitle" class="game-title">
+              <span class="title-line">Nie mów <strong>TAK</strong>,</span>
+              <span class="title-line">Nie mów <em>NIE</em></span>
+            </h2>
+            <p id="roundInfo">Runda 1</p>
+          </div>
+          <button class="icon-button" id="resetGame" type="button" aria-label="Resetuj gre">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4v6h6" />
+              <path d="M20 20v-6h-6" />
+              <path d="M20 9a8 8 0 0 0-13.5-4.8L4 6.5" />
+              <path d="M4 15a8 8 0 0 0 13.5 4.8L20 17.5" />
+            </svg>
+          </button>
+        </header>
+
+        <section class="wheel-panel" aria-label="Losowanie gracza">
+          <div class="wheel-wrap">
+            <canvas id="playerWheel" width="320" height="320" aria-label="Kolo losowania gracza"></canvas>
+            <div class="wheel-pointer" aria-hidden="true"></div>
+            <button class="spin-button" id="spinButton" type="button">Kręć</button>
+            <div class="wheel-badge" id="wheelBadge">Gra: ?</div>
+          </div>
+        </section>
+
+        <section class="turn-panel" aria-live="polite">
+          <div class="turn-topline">
+            <span id="activePlayer">Gra: losuj gracza</span>
+            <span class="timer" id="timer">30</span>
+          </div>
+          <article class="question-card" id="questionCard">
+            <p id="questionText">Kliknij Kręć, żeby wylosować osobę i pierwsze pytanie.</p>
+          </article>
+          <div class="current-score" id="currentScore" aria-label="Wynik bieżącego gracza">
+            <div class="score-label">Wynik bieżącego gracza</div>
+            <span class="score-ok"><i aria-hidden="true">✓</i><strong>0</strong></span>
+            <span class="score-fail"><i aria-hidden="true">×</i><strong>0</strong></span>
+            <div class="score-bar" aria-hidden="true"><span></span></div>
+          </div>
+          <div class="actions">
+            <button id="successButton" type="button" disabled><span aria-hidden="true">✓</span>Dał radę</button>
+            <button id="failButton" type="button" disabled><span aria-hidden="true">×</span>Wpadka</button>
+            <button id="skipButton" type="button" disabled><span aria-hidden="true">▶</span>Pomiń</button>
+          </div>
+        </section>
+
+        <footer class="game-footer">
+          <span>Gra dla wszystkich</span>
+          <span id="playersCount">4 graczy</span>
+        </footer>
+      </section>
+
+      <section class="board-screen is-hidden" id="boardScreen" aria-labelledby="boardTitle">
+        <div class="board-card">
+          <h2 id="boardTitle">Plansza rund</h2>
+          <p id="boardSubtitle">Runda zakończona. Przesuwacie pionek dalej.</p>
+          <div class="board-path" id="boardPath" aria-label="Postęp rund"></div>
+          <div class="board-scores" id="boardScores"></div>
+          <button class="primary-action" id="continueRound" type="button">Następna runda</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js?v=33" type="module"></script>
+  </body>
+</html>

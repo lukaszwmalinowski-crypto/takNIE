@@ -1,11 +1,11 @@
-const CACHE_NAME = "nie-mow-tak-v33";
+const CACHE_NAME = "nie-mow-tak-v37";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./szpieg.html",
-  "./title-screen.png",
+  "./title-screen-v37.png",
   "./spy-button-transparent.png",
   "./icon-192.png",
   "./icon-512.png",

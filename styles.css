@@ -96,8 +96,25 @@ button:disabled {
 }
 
 .title-start {
-  width: calc(100% - 36px);
-  margin: 16px 18px 18px;
+  position: absolute;
+  left: 7%;
+  bottom: 6.4%;
+  width: 86%;
+  height: 8.5%;
+  min-height: 0;
+  margin: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  box-shadow: none;
+  animation: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.title-start:focus-visible {
+  outline: 3px solid rgba(246, 182, 76, 0.88);
+  outline-offset: 4px;
 }
 
 h1,
